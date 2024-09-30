@@ -3,25 +3,501 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: scroll;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Slide in/out animations */
+.panel-slide-in {
+  transform: translateX(0);
+  transition: transform 0.5s ease-in-out;
+}
+
+.panel-slide-out {
+  transform: translateX(-100%);
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Basic styling for panels */
+.panel-container {
+  /* overflow: hidden; */
+  position: relative;
+}
+
+@font-face {
+  font-family: 'Neue Machina Light';
+  src: url('/fonts/NeueMachina-Light.eot');
+  src: local('Neue Machina Light'), local('/fonts/NeueMachina-Light'),
+    url('/fonts/NeueMachina-Light.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/NeueMachina-Light.woff2') format('woff2'),
+    url('/fonts/NeueMachina-Light.woff') format('woff'),
+    url('/fonts/NeueMachina-Light.ttf') format('truetype'),
+    url('/fonts/NeueMachina-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/NeueMachina-Regular.eot');
+  src: local('Neue Machina Regular'), local('/fonts/NeueMachina-Regular'),
+    url('/fonts/NeueMachina-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/NeueMachina-Regular.woff2') format('woff2'),
+    url('/fonts/NeueMachina-Regular.woff') format('woff'),
+    url('/fonts/NeueMachina-Regular.ttf') format('truetype'),
+    url('/fonts/NeueMachina-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neue Machina Ultrabold';
+  src: url('/fonts/NeueMachina-Ultrabold.eot');
+  src: local('Neue Machina Ultrabold'), local('/fonts/NeueMachina-Ultrabold'),
+    url('/fonts/NeueMachina-Ultrabold.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/NeueMachina-Ultrabold.woff2') format('woff2'),
+    url('/fonts/NeueMachina-Ultrabold.woff') format('woff'),
+    url('/fonts/NeueMachina-Ultrabold.ttf') format('truetype'),
+    url('/fonts/NeueMachina-Ultrabold.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans Book';
+  src: url('/fonts/MessinaSans-Book.eot');
+  src: local('Messina Sans Book'), local('/fonts/MessinaSans-Book'),
+    url('/fonts/MessinaSans-Book.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-Book.woff2') format('woff2'),
+    url('/fonts/MessinaSans-Book.woff') format('woff'),
+    url('/fonts/MessinaSans-Book.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-BlackItalic.eot');
+  src: local('Messina Sans Black Italic'), local('/fonts/MessinaSans-BlackItalic'),
+    url('/fonts/MessinaSans-BlackItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-BlackItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-BlackItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-BlackItalic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-SemiBold.eot');
+  src: local('Messina Sans SemiBold'), local('/fonts/MessinaSans-SemiBold'),
+    url('/fonts/MessinaSans-SemiBold.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-SemiBold.woff2') format('woff2'),
+    url('/fonts/MessinaSans-SemiBold.woff') format('woff'),
+    url('/fonts/MessinaSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-Black.eot');
+  src: local('Messina Sans Black'), local('/fonts/MessinaSans-Black'),
+    url('/fonts/MessinaSans-Black.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-Black.woff2') format('woff2'),
+    url('/fonts/MessinaSans-Black.woff') format('woff'),
+    url('/fonts/MessinaSans-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-Bold.eot');
+  src: local('Messina Sans Bold'), local('/fonts/MessinaSans-Bold'),
+    url('/fonts/MessinaSans-Bold.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-Bold.woff2') format('woff2'),
+    url('/fonts/MessinaSans-Bold.woff') format('woff'),
+    url('/fonts/MessinaSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-SemiBoldItalic.eot');
+  src: local('Messina Sans SemiBold Italic'), local('/fonts/MessinaSans-SemiBoldItalic'),
+    url('/fonts/MessinaSans-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-SemiBoldItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-SemiBoldItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-Regular.eot');
+  src: local('Messina Sans Regular'), local('/fonts/MessinaSans-Regular'),
+    url('/fonts/MessinaSans-Regular.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-Regular.woff2') format('woff2'),
+    url('/fonts/MessinaSans-Regular.woff') format('woff'),
+    url('/fonts/MessinaSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-LightItalic.eot');
+  src: local('Messina Sans Light Italic'), local('/fonts/MessinaSans-LightItalic'),
+    url('/fonts/MessinaSans-LightItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-LightItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-LightItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-BoldItalic.eot');
+  src: local('Messina Sans Bold Italic'), local('/fonts/MessinaSans-BoldItalic'),
+    url('/fonts/MessinaSans-BoldItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-BoldItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-BoldItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans Book';
+  src: url('/fonts/MessinaSans-BookItalic.eot');
+  src: local('Messina Sans Book Italic'), local('/fonts/MessinaSans-BookItalic'),
+    url('/fonts/MessinaSans-BookItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-BookItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-BookItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-BookItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-RegularItalic.eot');
+  src: local('Messina Sans Regular Italic'), local('/fonts/MessinaSans-RegularItalic'),
+    url('/fonts/MessinaSans-RegularItalic.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-RegularItalic.woff2') format('woff2'),
+    url('/fonts/MessinaSans-RegularItalic.woff') format('woff'),
+    url('/fonts/MessinaSans-RegularItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Messina Sans';
+  src: url('/fonts/MessinaSans-Light.eot');
+  src: local('Messina Sans Light'), local('/fonts/MessinaSans-Light'),
+    url('/fonts/MessinaSans-Light.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/MessinaSans-Light.woff2') format('woff2'),
+    url('/fonts/MessinaSans-Light.woff') format('woff'),
+    url('/fonts/MessinaSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+.stamp {
+  margin: 0;
+  padding: 0;
+  width: 140px;
+  height: 90px;
+  display: inline-block;
+  padding: 5px;
+  background: white;
+  position: relative;
+  text-align: center;
+  -webkit-filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+  background: radial-gradient(transparent 0px,
+      transparent 2px,
+      white 2px,
+      white);
+  background-size: 10px 10px;
+  background-position: -5px -5px;
+}
+
+.fade-effect::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  /* Adjust the height to control the extent of the fading effect */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  pointer-events: none;
+  /* Prevents the overlay from interfering with clicks and interaction */
+}
+
+.react-flow__attribution {
+  display: none;
+}
+
+.radial-fade {
+  position: relative;
+  background-color: transparent;
+  /* Ensure there's no solid background color interfering */
+  padding: 4rem;
+  border-radius: 0.5rem;
+  color: black;
+  text-align: center;
+}
+
+.radial-fade * {
+  position: relative;
+  z-index: 2;
+}
+
+.radial-fade::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(20, 20, 20, 1) 0%, rgba(20, 20, 20, 0.7) 30%, rgba(20, 20, 20, 0) 60%);
+  /* This gradient starts fully transparent and transitions to a semi-transparent black, affecting only opacity */
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+* {
+  font-family: 'Inter', 'Messina Sans', sans-serif;
+}
+
+@layer base {
+
+  input,
+  textarea,
+  select {
+    @apply bg-white text-bbgray-900;
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-bbgray-800 text-white;
+  }
+
+  .light .react-flow__renderer {
+    @apply bb-50 text-bbgray-900;
+  }
+
+  .light .react-flow__pane {
+    @apply bb-50 text-bbgray-900;
+  }
+
+  .dark .react-flow__renderer {
+    @apply bb-50 text-white
+  }
+
+  .dark .react-flow__pane {
+    @apply bb-50 dark:text-white
   }
 }
+
+
+@layer components {
+  .bb-50 {
+    @apply text-bbgray-700 bg-bbgray-50 dark:bg-bbgray-900 dark:text-white;
+  }
+
+  .bb-100 {
+    @apply text-bbgray-700 bg-bbgray-50 dark:bg-bbgray-800 dark:text-white;
+  }
+
+  .bb-200 {
+    @apply text-bbgray-700 bg-bbgray-200 dark:bg-bbgray-700 dark:text-white;
+  }
+
+  .bb-300 {
+    @apply text-bbgray-700 bg-bbgray-300 dark:bg-bbgray-600 dark:text-white;
+  }
+
+  .bb-400 {
+    @apply text-bbgray-700 bg-bbgray-400 dark:bg-bbgray-500 dark:text-white;
+  }
+
+  .bb-500 {
+    @apply text-bbgray-700 bg-bbgray-500 dark:bg-bbgray-400 dark:text-white;
+  }
+
+  .bb-600 {
+    @apply text-bbgray-700 bg-bbgray-600 dark:bg-bbgray-300 dark:text-white;
+  }
+
+  .bb-700 {
+    @apply text-bbgray-700 bg-bbgray-700 dark:bg-bbgray-200 dark:text-white;
+  }
+
+  .bb-800 {
+    @apply text-bbgray-700 bg-bbgray-800 dark:bg-bbgray-100 dark:text-white;
+  }
+
+  .bb-900 {
+    @apply text-bbgray-700 bg-bbgray-900 dark:bg-bbgray-50 dark:text-white;
+  }
+
+  .bb-1000 {
+    @apply text-bbgray-700 bg-bbgray-1000 dark:bg-bbgray-50 dark:text-white;
+  }
+
+  .bb-white {
+    @apply text-bbgray-700 bg-white dark:bg-bbgray-1000 dark:text-white;
+  }
+
+  .bb-black {
+    @apply text-bbgray-50 bg-black dark:bg-bbgray-100 dark:text-black;
+  }
+
+  .button-bb-50 {
+    @apply text-bbgray-700 bg-bbgray-50 dark:bg-bbgray-900 dark:text-white hover:bg-bbgray-100 dark:hover:bg-bbgray-800 transition-colors duration-200;
+  }
+
+  .button-bb-100 {
+    @apply text-bbgray-700 bg-bbgray-50 dark:bg-bbgray-800 dark:text-white hover:bg-bbgray-100 dark:hover:bg-bbgray-700 transition-colors duration-200;
+  }
+
+  .button-bb-200 {
+    @apply text-bbgray-700 bg-bbgray-200 dark:bg-bbgray-700 dark:text-white hover:bg-bbgray-300 dark:hover:bg-bbgray-600 transition-colors duration-200;
+  }
+
+  .button-bb-300 {
+    @apply text-bbgray-700 bg-bbgray-300 dark:bg-bbgray-600 dark:text-white hover:bg-bbgray-400 dark:hover:bg-bbgray-500 transition-colors duration-200;
+  }
+
+  .button-bb-400 {
+    @apply text-bbgray-700 bg-bbgray-400 dark:bg-bbgray-500 dark:text-white hover:bg-bbgray-500 dark:hover:bg-bbgray-400 transition-colors duration-200;
+  }
+
+  .button-bb-500 {
+    @apply text-bbgray-700 bg-bbgray-500 dark:bg-bbgray-400 dark:text-white hover:bg-bbgray-600 dark:hover:bg-bbgray-300 transition-colors duration-200;
+  }
+
+  .button-bb-600 {
+    @apply text-bbgray-700 bg-bbgray-600 dark:bg-bbgray-300 dark:text-white hover:bg-bbgray-700 dark:hover:bg-bbgray-200 transition-colors duration-200;
+  }
+
+  .button-bb-700 {
+    @apply text-bbgray-700 bg-bbgray-700 dark:bg-bbgray-200 dark:text-white hover:bg-bbgray-800 dark:hover:bg-bbgray-100 transition-colors duration-200;
+  }
+
+  .button-bb-800 {
+    @apply text-bbgray-700 bg-bbgray-800 dark:bg-bbgray-100 dark:text-white hover:bg-bbgray-900 dark:hover:bg-bbgray-50 transition-colors duration-200;
+  }
+
+  .button-bb-900 {
+    @apply text-bbgray-700 bg-bbgray-900 dark:bg-bbgray-50 dark:text-white hover:bg-bbgray-1000 dark:hover:bg-bbgray-50 transition-colors duration-200;
+  }
+
+  .button-bb-1000 {
+    @apply text-bbgray-700 bg-bbgray-1000 dark:bg-bbgray-50 dark:text-white hover:bg-bbgray-50 dark:hover:bg-bbgray-1000 transition-colors duration-200;
+  }
+
+  .button-bb-white {
+    @apply text-bbgray-700 bg-white dark:bg-bbgray-1000 dark:text-white hover:bg-bbgray-50 dark:hover:bg-bbgray-800 transition-colors duration-200;
+  }
+
+  .button-bb-black {
+    @apply text-bbgray-50 bg-black dark:bg-bbgray-100 dark:text-black hover:bg-bbgray-100 dark:hover:bg-bbgray-50 transition-colors duration-200;
+  }
+
+  .border-bb-50 {
+    @apply border border-bbgray-50 dark:border-bbgray-800;
+  }
+
+  .border-bb-100 {
+    @apply border border-bbgray-100 dark:border-bbgray-700;
+  }
+
+  .border-bb-200 {
+    @apply border border-bbgray-200 dark:border-bbgray-600;
+  }
+
+  .border-bb-300 {
+    @apply border border-bbgray-300 dark:border-bbgray-500;
+  }
+
+  .border-bb-400 {
+    @apply border border-bbgray-400 dark:border-bbgray-400;
+  }
+
+  .border-bb-500 {
+    @apply border border-bbgray-500 dark:border-bbgray-300;
+  }
+
+  .border-bb-600 {
+    @apply border border-bbgray-600 dark:border-bbgray-200;
+  }
+
+  .border-bb-700 {
+    @apply border border-bbgray-700 dark:border-bbgray-100;
+  }
+
+  .border-bb-800 {
+    @apply border border-bbgray-800 dark:border-bbgray-50;
+  }
+
+  .border-bb-900 {
+    @apply border border-bbgray-900 dark:border-white;
+  }
+
+  .border-bb-1000 {
+    @apply border border-bbgray-1000 dark:border-white;
+  }
+
+  .border-bb-white {
+    @apply border-white dark:border-black;
+  }
+
+  .border-bb-black {
+    @apply border-black dark:border-white;
+  }
+}
+
+/* .react-flow__pane {
+  background-color: white;
+} */
+
+/* .react-flow__renderer .dark {
+  background-color: #1a202c;
+} */
+
+/* Custom Scrollbar styling */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* ::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 10px;
+} */
