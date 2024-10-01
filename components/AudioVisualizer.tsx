@@ -1,28 +1,14 @@
 import React, { useRef, useEffect } from 'react';
 
 interface AudioVisualizerProps {
-  audio: MediaStream;
+  audioDataRef: React.RefObject<Float32Array>;
 }
 
-interface WebkitAudioContext extends AudioContext {
-  webkitAudioContext: AudioContext;
-}
-
-const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audio }) => {
+const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audioDataRef }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
-
-    const AudioContextClass = (window.AudioContext || (window as unknown as WebkitAudioContext).webkitAudioContext);
-    const audioContext = new AudioContextClass();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaStreamSource(audio);
-    source.connect(analyser);
-
-    analyser.fftSize = 512;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
 
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
@@ -32,8 +18,9 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audio }) => {
     let animationFrameId: number;
     const updateInterval = 40;
     const smoothingFactor = 0.8;
-    const smoothedData = new Float32Array(bufferLength).fill(128);
     let lastUpdateTime = 0;
+    const bufferLength = audioDataRef.current?.length ?? 0;
+    const smoothedData = new Float32Array(bufferLength).fill(0);
 
     const draw = (currentTime: number) => {
       animationFrameId = requestAnimationFrame(draw);
@@ -44,16 +31,18 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audio }) => {
 
       lastUpdateTime = currentTime;
 
+      const audioData = audioDataRef.current;
+
+      if (!audioData) return;
+
       const WIDTH = canvas.width;
       const HEIGHT = canvas.height;
 
-      analyser.getByteTimeDomainData(dataArray);
-
       // Apply smoothing and amplification
-      const amplificationFactor = 2.7; // Adjust this value to increase/decrease amplification
+      const amplificationFactor = 2.7; // increase/decrease amplification
       for (let i = 0; i < bufferLength; i++) {
-        const normalizedValue = (dataArray[i] - 128) / 128; // Normalize to [-1, 1]
-        const amplifiedValue = Math.tanh(normalizedValue * amplificationFactor) * 128 + 128; // Amplify and bring back to [0, 255]
+        const normalizedValue = audioData[i];
+        const amplifiedValue = Math.tanh(normalizedValue * amplificationFactor) * 128 + 128; // Amplify and scale to [0, 255]
         smoothedData[i] = smoothingFactor * smoothedData[i] + (1 - smoothingFactor) * amplifiedValue;
       }
 
@@ -86,10 +75,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ audio }) => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      source.disconnect();
-      audioContext.close();
     };
-  }, [audio]);
+  }, [audioDataRef]);
 
   return <canvas ref={canvasRef} width="300" height="150" />;
 };
